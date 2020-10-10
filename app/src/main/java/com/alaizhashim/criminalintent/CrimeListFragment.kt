@@ -1,6 +1,8 @@
 package com.alaizhashim.criminalintent
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DateFormat.FULL
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "CrimeListFragment"
 class CrimeListFragment : Fragment() {
+    var formatter: SimpleDateFormat=SimpleDateFormat ("EEEE, MMM d, yyyy")
     private lateinit var crimeRecyclerView: RecyclerView
     private var adapter: CrimeAdapter? = null
     private val crimeListViewModel: CrimeListViewModel by lazy {
@@ -62,7 +68,7 @@ class CrimeListFragment : Fragment() {
         override fun bind(crime: Crime) {
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            dateTextView.text =formatter.format(this.crime.date)
         }
 
         override fun onClick(v: View?) {
@@ -79,10 +85,11 @@ class CrimeListFragment : Fragment() {
         init {
             itemView.setOnClickListener(this)
         }
+        @SuppressLint("SimpleDateFormat")
         override fun bind(crime: Crime) {
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            dateTextView.text =formatter.format(this.crime.date)
             contact_police_button.apply {
                 text="Contact Police"
             }
