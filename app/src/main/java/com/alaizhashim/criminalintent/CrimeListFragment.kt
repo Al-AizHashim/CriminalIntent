@@ -60,6 +60,7 @@ class CrimeListFragment : Fragment() {
             Observer {crimes ->
                 crimes?.let {
                     //Log.i(TAG, "Got crimes ${crimes.size}")
+                     //adapter?.submitList(crimes)
                     updateUI(crimes)
 
                 }
@@ -72,6 +73,11 @@ class CrimeListFragment : Fragment() {
     private fun updateUI(crimes: List<Crime>) {
         adapter = CrimeAdapter(crimes)
         crimeRecyclerView.adapter = adapter
+        //adapter=CrimeAdapter().submitList((crimes))
+        var listAdapter=crimeRecyclerView.adapter as CrimeAdapter
+        listAdapter.submitList(crimes)
+
+
     }
 
     companion object {
@@ -160,7 +166,8 @@ class CrimeListFragment : Fragment() {
 
         override fun getItemCount() = crimes.size
         override fun onBindViewHolder(holder: MainHolder, position: Int) {
-            val crime = crimes[position]
+            val crime = getItem(position)
+
             holder.bind(crime)
         }
 
@@ -176,7 +183,7 @@ class CrimeListFragment : Fragment() {
     }
     private inner class CrimeDiffUtil:DiffUtil.ItemCallback<Crime>(){
         override fun areItemsTheSame(oldItem: Crime, newItem: Crime): Boolean {
-            return oldItem === newItem
+            return oldItem == newItem
         }
 
         override fun areContentsTheSame(oldItem: Crime, newItem: Crime): Boolean {
