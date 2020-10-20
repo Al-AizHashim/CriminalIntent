@@ -72,9 +72,12 @@ class CrimeListFragment : Fragment() {
     }
     private fun updateUI(crimes: List<Crime>) {
         adapter = CrimeAdapter(crimes)
+        var xx: List<Crime>? =null
         crimeRecyclerView.adapter = adapter
         //adapter=CrimeAdapter().submitList((crimes))
+
         var listAdapter=crimeRecyclerView.adapter as CrimeAdapter
+
         listAdapter.submitList(crimes)
 
 
