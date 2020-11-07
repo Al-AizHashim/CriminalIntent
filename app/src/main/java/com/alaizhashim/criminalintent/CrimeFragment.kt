@@ -39,6 +39,7 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
     private lateinit var timeButton: Button
     private lateinit var reportButton: Button
     private lateinit var suspectButton: Button
+    private lateinit var callSuspectButton: Button
     private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
@@ -61,6 +62,7 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
         reportButton = view.findViewById(R.id.crime_report) as Button
         suspectButton = view.findViewById(R.id.crime_suspect) as Button
+        callSuspectButton=view.findViewById(R.id.call_suspect) as Button
 
         return view
     }
@@ -138,6 +140,14 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
                 isEnabled = false
             }
         }
+        callSuspectButton.setOnClickListener {
+            val callSuspectIntent = Intent(Intent.ACTION_DIAL).apply {
+                action=Intent.ACTION_DIAL
+                data=Uri.parse("tel:${crime.suspectPhoneNumber}")
+            }
+            startActivity(callSuspectIntent)
+        }
+
         timeButton.setOnClickListener {
             TimePickerFragment.newInstance(crime.date).apply {
                 setTargetFragment(this@CrimeFragment, REQUEST_TIME)
@@ -145,7 +155,6 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
                 show(this@CrimeFragment.requireFragmentManager(), DIALOG_TIME)
             }
         }
-
     }
 
     override fun onStop() {
@@ -170,7 +179,7 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
             requestCode == REQUEST_CONTACT && data != null -> {
                 val contactUri: Uri? = data.data
                      // Specify which fields you want your query to return values for
-                val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+                val queryFields = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,ContactsContract.CommonDataKinds.Phone.NUMBER)
                     // Perform your query - the contactUri is like a "where" clause here
                 val cursor = requireActivity().contentResolver
                     .query(contactUri!!, queryFields, null, null, null)
@@ -182,7 +191,9 @@ class CrimeFragment:Fragment(), DatePickerFragment.Callbacks,TimePickerFragment.
                         // that is your suspect's name
                         it.moveToFirst()
                     val suspect = it.getString(0)
+                    val suspectNumber=it.getString(1)
                     crime.suspect = suspect
+                    crime.suspectPhoneNumber=suspectNumber
                     crimeDetailViewModel.saveCrime(crime)
                     suspectButton.text = suspect
                 }

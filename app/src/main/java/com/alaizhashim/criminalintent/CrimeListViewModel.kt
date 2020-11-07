@@ -1,8 +1,6 @@
 package com.alaizhashim.criminalintent
 
-import android.widget.Button
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+
 import androidx.lifecycle.ViewModel
 
 class CrimeListViewModel : ViewModel(){
